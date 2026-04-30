@@ -1,0 +1,11 @@
+# Ignore the tool's own source code (contains patterns that look like secrets)
+env_guard/rules.py
+
+# Ignore packaging config
+pyproject.toml
+
+# Ignore test files
+tests/
+
+# Ignore this ignore file itself
+.envguardignore

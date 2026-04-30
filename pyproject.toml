@@ -1,0 +1,28 @@
+ # Modern Python packaging (replaces setup.py)
+
+ [build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "env-guard"
+version = "0.1.0"
+description = "Scan your codebase for exposed secrets and API keys before committing"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+keywords = ["security", "secrets", "cli", "devtools", "api-keys"]
+authors = [
+  { name = "siyadhkc", email = "siyadhkc@gmail.com" }
+]
+dependencies = [
+  "click>=8.0",
+  "colorama>=0.4.6",
+]
+
+[project.scripts]
+env-guard = "env_guard.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["env_guard*"]

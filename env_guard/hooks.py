@@ -1,0 +1,1 @@
+ # Git pre-commit hook installer
