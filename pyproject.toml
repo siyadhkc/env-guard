@@ -26,3 +26,8 @@ env-guard = "env_guard.cli:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["env_guard*"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]

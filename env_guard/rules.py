@@ -83,12 +83,12 @@ RULES = [
     # ── Slack ─────────────────────────────────────────────────────────────
     {
         "name": "Slack Bot Token",
-        "pattern": re.compile(r'xoxb-[0-9]{11}-[0-9]{11}-[A-Za-z0-9]{24}'),
+       "pattern": re.compile(r'xoxb-[0-9]{8,13}-[0-9]{8,13}-[A-Za-z0-9]{16,}'),
         "severity": "HIGH",
     },
     {
         "name": "Slack User Token",
-        "pattern": re.compile(r'xoxp-[0-9]{11}-[0-9]{11}-[A-Za-z0-9]{24}'),
+        "pattern": re.compile(r'xoxp-[0-9]{8,13}-[0-9]{8,13}-[A-Za-z0-9]{16,}'),
         "severity": "HIGH",
     },
     {
@@ -126,7 +126,7 @@ RULES = [
     # ── SendGrid ──────────────────────────────────────────────────────────
     {
         "name": "SendGrid API Key",
-        "pattern": re.compile(r'SG\.[A-Za-z0-9\-_]{22}\.[A-Za-z0-9\-_]{43}'),
+        "pattern": re.compile(r'SG\.[A-Za-z0-9\-_]{20,}\.[A-Za-z0-9\-_]{20,}'),
         "severity": "HIGH",
     },
 
