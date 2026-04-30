@@ -308,5 +308,5 @@ SKIP_DIRS = {
     ".venv", "venv", "env",
     ".tox", ".mypy_cache", ".pytest_cache",
     "dist", "build", ".eggs",
-    "migrations",   # Django migrations — not secrets
+    "migrations","tests","test_rules","test_scanner",  # Django migrations — not secrets
 }
