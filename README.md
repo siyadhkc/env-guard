@@ -80,22 +80,26 @@ That's it. After `install-hook`, you never have to think about it again. Every c
 ## Usage
 
 ### Scan a directory
+
 ```bash
 env-guard scan .
 env-guard scan /path/to/project
 ```
 
 ### Only show HIGH severity findings
+
 ```bash
 env-guard scan . --severity HIGH
 ```
 
 ### JSON output (for scripts and CI pipelines)
+
 ```bash
 env-guard scan . --format json
 ```
 
 ### Scan without blocking (reporting mode)
+
 ```bash
 env-guard scan . --no-fail
 ```
