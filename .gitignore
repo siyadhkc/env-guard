@@ -10,3 +10,4 @@ build/
 .eggs/
 *.log
 .env
+.pypirc
