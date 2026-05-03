@@ -191,7 +191,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - run: pip install env-guard
+      - run: pip install env-scan-cli
       - run: env-guard scan .
 ```
 
