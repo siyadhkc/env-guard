@@ -155,3 +155,38 @@ def test_empty_directory(tmp_path):
     result = scan(str(tmp_path))
     assert result["scanned"] == 0
     assert result["findings"] == []
+
+def test_custom_rules_loaded(tmp_path):
+    # Create a rules.yml in the temp project
+    rules_file = tmp_path / "rules.yml"
+    rules_file.write_text("""
+rules:
+  - name: "Custom Test Rule"
+    pattern: "CUSTOM_SECRET_[A-Z0-9]{8}"
+    severity: HIGH
+""")
+    # Create a file that matches the custom rule
+    secret_file = tmp_path / "config.py"
+    secret_file.write_text('token = "CUSTOM_SECRET_ABCD1234"')
+
+    result = scan(str(tmp_path))
+    rules_found = [f["rule"] for f in result["findings"]]
+    assert "Custom Test Rule" in rules_found
+    assert result["custom_rules_loaded"] == 1
+
+
+def test_invalid_custom_rule_skipped(tmp_path):
+    # Bad regex should not crash the scanner
+    rules_file = tmp_path / "rules.yml"
+    rules_file.write_text("""
+rules:
+  - name: "Bad Rule"
+    pattern: "[invalid(regex"
+    severity: HIGH
+""")
+    clean = tmp_path / "clean.py"
+    clean.write_text('x = 1')
+
+    # Should not raise
+    result = scan(str(tmp_path))
+    assert result["custom_rules_loaded"] == 0

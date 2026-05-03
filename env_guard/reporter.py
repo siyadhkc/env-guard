@@ -56,7 +56,8 @@ def print_findings(result: dict, path: str) -> None:
             continue
         for finding in group:
             severity_str = _severity_label(finding["severity"])
-            print(f"  {severity_str}  {Style.BRIGHT}{finding['rule']}{Style.RESET_ALL}")
+            custom_label = f"  {Fore.MAGENTA}[custom]{Style.RESET_ALL}" if finding.get('custom') else ""
+            print(f"  {severity_str}  {Style.BRIGHT}{finding['rule']}{Style.RESET_ALL}{custom_label}")
             print(f"  {Fore.WHITE}File : {finding['file']}:{finding['line']}{Style.RESET_ALL}")
             print(f"  {Fore.WHITE}Code : {Style.DIM}{finding['content']}{Style.RESET_ALL}")
             print()

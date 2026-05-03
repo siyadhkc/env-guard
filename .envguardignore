@@ -9,3 +9,4 @@ tests/
 
 # Ignore this ignore file itself
 .envguardignore
+index.html

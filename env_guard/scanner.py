@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Generator
 
 from env_guard.rules import RULES, SKIP_DIRS, SKIP_EXTENSIONS
+from env_guard.custom_rules import load_custom_rules
 
 
 # Each finding is a plain dict — no classes needed at this scale
@@ -107,7 +108,10 @@ def _walk_files(base_path: Path, ignore_patterns: list[str]) -> Generator[Path, 
             yield file_path
 
 
-def _scan_file(file_path: Path, base_path: Path) -> list[dict]:
+def _scan_file(file_path: Path, base_path: Path, rules: list[dict] = None) -> list[dict]:
+    if rules is None:
+        from env_guard.rules import RULES
+        rules = RULES
     """
     Scan a single file against all rules.
     Returns a list of finding dicts.
@@ -123,7 +127,7 @@ def _scan_file(file_path: Path, base_path: Path) -> list[dict]:
     lines = content.splitlines()
 
     for line_number, line in enumerate(lines, start=1):
-        for rule in RULES:
+        for rule in rules:
             if rule["pattern"].search(line):
                 findings.append({
                     "file": str(file_path.relative_to(base_path)).replace("\\", "/"),
@@ -135,44 +139,45 @@ def _scan_file(file_path: Path, base_path: Path) -> list[dict]:
 
     return findings
 
-
 def scan(path: str) -> dict:
     """
     Main entry point. Scans the given path recursively.
-
-    Returns:
-    {
-        "findings": [...],   list of finding dicts
-        "scanned":  int,     number of files scanned
-        "skipped":  int,     number of files skipped (binary/ignored)
-        "errors":   []       reserved for future use
-    }
     """
     base_path = Path(path).resolve()
 
     if not base_path.exists():
         raise FileNotFoundError(f"Path does not exist: {path}")
 
+    # Load custom rules and merge with built-in rules
+    # Custom rules are appended — they run after built-in rules
+    custom = load_custom_rules(str(base_path if base_path.is_dir() else base_path.parent))
+    all_rules = RULES + custom
+
     if base_path.is_file():
-        # Allow scanning a single file directly
         ignore_patterns = _load_ignore_patterns(base_path.parent)
-        findings = _scan_file(base_path, base_path.parent)
-        return {"findings": findings, "scanned": 1, "skipped": 0, "errors": []}
+        findings = _scan_file(base_path, base_path.parent, all_rules)
+        return {
+            "findings": findings,
+            "scanned": 1,
+            "skipped": 0,
+            "errors": [],
+            "custom_rules_loaded": len(custom),
+        }
 
     ignore_patterns = _load_ignore_patterns(base_path)
 
     all_findings = []
     scanned = 0
-    skipped = 0
 
     for file_path in _walk_files(base_path, ignore_patterns):
-        findings = _scan_file(file_path, base_path)
+        findings = _scan_file(file_path, base_path, all_rules)
         all_findings.extend(findings)
         scanned += 1
 
     return {
         "findings": all_findings,
         "scanned": scanned,
-        "skipped": skipped,
+        "skipped": 0,
         "errors": [],
+        "custom_rules_loaded": len(custom),
     }
