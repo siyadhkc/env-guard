@@ -240,7 +240,7 @@ RULES = [
     },
     {
         "name": "Basic Auth in URL",
-        "pattern": re.compile(r'https?://[^:]+:[^@]+@[a-zA-Z0-9\-\.]+'),
+        "pattern": re.compile(r'https?://[a-zA-Z0-9_\-\.]+:[a-zA-Z0-9_\-\.!@#$%^&*]{4,}@[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}'),
         "severity": "HIGH",
     },
     {
